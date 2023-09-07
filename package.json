@@ -11,8 +11,17 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "wedata-test",
+          "title": "wedata test",
+          "icon": "media/logo.svg"
+        }
+      ]
+    },
     "views": {
-      "explorer": [
+      "wedata-test": [
         {
           "id": "myTreeView",
           "name": "My Tree View"
@@ -23,6 +32,14 @@
       {
         "command": "wedata-test.showHello",
         "title": "Show Hello"
+      },
+      {
+        "command": "wedata-test.showTreeView",
+        "title": "Show Tree View"
+      },
+      {
+        "command": "wedata-test.hideTreeView",
+        "title": "Hide Tree View"
       }
     ]
   },
