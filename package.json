@@ -38,18 +38,27 @@
     },
     "commands": [
       {
-        "command": "wedata-test.showHello",
-        "title": "Show Hello"
-      },
-      {
         "command": "wedata-test.showTreeView",
         "title": "Show Tree View"
       },
       {
         "command": "wedata-test.hideTreeView",
         "title": "Hide Tree View"
+      },
+      {
+        "command": "wedata-test.openWithExtension",
+        "title": "Open with 我的插件"
       }
-    ]
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "wedata-test.openWithExtension",
+          "when": "resourceLangId == sql && resourceFilename =~ /[^.]+\\.test\\.sql$/",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
