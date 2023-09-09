@@ -16,7 +16,7 @@
         {
           "id": "wedata-test",
           "title": "wedata test",
-          "icon": "media/logo.svg"
+          "icon": "media/add.svg"
         }
       ]
     },
@@ -45,7 +45,11 @@
     "commands": [
       {
         "command": "wedata-test.showTreeView",
-        "title": "Show Tree View"
+        "title": "Show Tree View",
+        "icon":{
+          "light": "media/add.svg",
+          "dark": "media/add.svg"
+        }
       },
       {
         "command": "wedata-test.hideTreeView",
@@ -57,11 +61,26 @@
       }
     ],
     "menus": {
-      "explorer/context": [
+      "view/title": [
         {
-          "command": "wedata-test.openWithExtension",
-          "when": "resourceLangId == sql && resourceFilename =~ /[^.]+\\.test\\.sql$/",
+          "command": "wedata-test.showTreeView",
+          "when": "view == testView",
           "group": "navigation"
+        },
+        {
+          "command": "wedata-test.showTreeView",
+          "when": "view == testView"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "wedata-test.showTreeView",
+          "when": "view == testView",
+          "group": "inline"
+        },
+        {
+          "command": "wedata-test.showTreeView",
+          "when": "view == testView"
         }
       ]
     }
