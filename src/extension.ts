@@ -4,8 +4,15 @@ export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "wedata-test" is now active!');
 
     // 创建树状视图面板
-    const treeViewProvider = new TreeViewProvider();
-    vscode.window.registerTreeDataProvider('myTreeView', treeViewProvider);
+    const testViewProvider = new TreeViewProvider();
+    vscode.window.registerTreeDataProvider('testView', testViewProvider);
+
+    const allTestViewProvider = new TreeViewProvider();
+    vscode.window.registerTreeDataProvider('filesView', allTestViewProvider);
+
+    // 创建数据库连接视图面板
+    const dbViewProvider = new DBViewProvider();
+    vscode.window.registerWebviewViewProvider('dbView', dbViewProvider);
 
     // 监听树节点点击事件
     vscode.commands.registerCommand('wedata-test.showHello', (node: TreeNode) => {
@@ -27,6 +34,12 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand('wedata-test.hideTreeView', () => {
         console.log('Hide Tree View command executed');
         vscode.commands.executeCommand('setContext', 'showTreeView', false);
+    });
+
+    // 注册命令以打开数据库连接视图
+    vscode.commands.registerCommand('wedata-test.openDBView', () => {
+        console.log('Open DB View command executed');
+        vscode.commands.executeCommand('vscode.open', vscode.Uri.parse('wedata-db://dbView'));
     });
 }
 
@@ -51,6 +64,12 @@ class TreeViewProvider implements vscode.TreeDataProvider<TreeNode> {
         } else {
             return Promise.resolve(this.data);
         }
+    }
+}
+
+class DBViewProvider implements vscode.WebviewViewProvider {
+    resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void {
+        webviewView.webview.html = '<h1>Database Connection View</h1>';
     }
 }
 

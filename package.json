@@ -23,8 +23,16 @@
     "views": {
       "wedata-test": [
         {
-          "id": "myTreeView",
-          "name": "My Tree View"
+          "id": "testView",
+          "name": "Test View"
+        },
+        {
+          "id": "filesView",
+          "name": "Files View"
+        },
+        {
+          "id": "dbView",
+          "name": "Database View"
         }
       ]
     },
