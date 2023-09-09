@@ -24,15 +24,21 @@
       "wedata-test": [
         {
           "id": "testView",
-          "name": "Test View"
+          "name": "Test View",
+          "newFile": true,
+          "icon": "media/add.svg"
         },
         {
           "id": "filesView",
-          "name": "Files View"
+          "name": "Files View",
+          "newFile": true,
+          "icon": "media/add.svg"
         },
         {
           "id": "dbView",
-          "name": "Database View"
+          "name": "Database View",
+          "newFile": true,
+          "icon": "media/add.svg"
         }
       ]
     },

@@ -2,7 +2,17 @@ import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
     console.log('Congratulations, your extension "wedata-test" is now active!');
-
+    // 注册 webview 的消息处理程序
+    vscode.window.registerWebviewViewProvider('wedata-test', {
+        resolveWebviewView(webviewView: vscode.WebviewView) {
+            webviewView.webview.onDidReceiveMessage(message => {
+                if (message.command === 'newFile') {
+                    // 在这里执行新建文件的逻辑
+                    vscode.window.showInformationMessage('执行新建文件操作');
+                }
+            });
+        }
+    });
     // 创建树状视图面板
     const testViewProvider = new TreeViewProvider();
     vscode.window.registerTreeDataProvider('testView', testViewProvider);
