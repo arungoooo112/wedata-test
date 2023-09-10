@@ -16,8 +16,15 @@ function registerCommands() {
     vscode.commands.registerCommand('wedata-test.showHello', (node: TreeNode) => {
         console.log(`Clicked on node: ${node.label}`);
         const helloText = 'hello';
-        vscode.workspace.openTextDocument({ content: helloText })
-            .then(vscode.window.showTextDocument);
+
+        // 获取当前打开的文本编辑器
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            // 在当前光标位置追加文本
+            editor.edit(editBuilder => {
+                editBuilder.insert(editor.selection.active, helloText);
+            });
+        }
     });
 
     vscode.commands.registerCommand('wedata-test.showTreeView', () => {
@@ -68,16 +75,20 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
     }
 
     resolveWebviewView(webviewView: vscode.WebviewView, context: vscode.WebviewViewResolveContext<unknown>, token: vscode.CancellationToken): void {
-        webviewView.webview.html = this.getWebviewContent();
-
+        webviewView.webview.html = this.getWebviewContent(webviewView);
         webviewView.webview.onDidReceiveMessage(message => {
-            if (message.command === 'myCommand') {
-                // 执行相应的逻辑
-            }
-        });
+            switch (message.command) {
+                case 'myCommand':  {
+                    // 获取当前打开的文本编器
+                    vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${message.text}`));
+                    break;
+					}
+              }
+        } 
+        );
     }
 
-    private getWebviewContent(): string {
+    private getWebviewContent(webviewView: vscode.WebviewView): string {
         return `
             <html>
             <body>
@@ -86,9 +97,12 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
 
                 <script>
                     function sendMessage() {
-                        vscode.postMessage({ command: 'myCommand', text: 'Hello from Webview!' });
+                        const message = { command: 'myCommand', text: 'Hello from Webview!' };
+                        vscode.postMessage(message);
                     }
                 </script>
+
+                <div id="container"></div>
             </body>
             </html>
         `;
