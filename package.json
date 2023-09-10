@@ -25,6 +25,7 @@
           "icon": "media/logo.svg"
         },
         {
+          "type": "webview",
           "id": "dbView",
           "name": "Database View",
           "icon": "media/logo.svg"
