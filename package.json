@@ -24,10 +24,16 @@
 		},
 		"commands": [
 			{
+				"command": "wedatatest.addTestFile",
+				"category": "wedata test",
+				"title": "add test",
+				"icon": "$(new-file)"
+			},
+			{
 				"command": "wedatatest.addTest",
 				"category": "wedata test",
-				"title": "add test"
-			},
+				"title": "add test item"
+			},	
 			{
 				"command": "wedatatest.cleartest",
 				"category": "wedata test",
@@ -39,6 +45,11 @@
 			"view/title": [
 				{
 					"command": "wedatatest.cleartest",
+					"group": "navigation",
+					"when": "view == wedatatest.testView"
+				},
+				{
+					"command": "wedatatest.addTestFile",
 					"group": "navigation",
 					"when": "view == wedatatest.testView"
 				}

@@ -103,12 +103,10 @@ class testViewProvider implements vscode.WebviewViewProvider {
 				<title>Cat test</title>
 			</head>
 			<body>
-				<button class="add-color">add test</button>
-
 				<ul class="color-list">
 				</ul>
 
-				<button class="add-color1">add test</button>
+				<button class="add-color">add test item</button>
 
 				<script nonce="${nonce}" src="${scriptUri}">
 				</script>
