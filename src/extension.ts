@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -11,7 +13,35 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.commands.registerCommand('wedatatest.addTest', () => {
 			provider.addTest();
 		}));
-
+		context.subscriptions.push(
+			vscode.commands.registerCommand('wedatatest.addTestFile', () => {
+				// Specify the file name and extension
+				const fileName = 'testFile.test.sql';
+		
+				// Specify the file content
+				const fileContent = '-- This is a test SQL file';
+		
+				// Get the current workspace folder
+				const workspaceFolder = vscode.workspace.workspaceFolders[0].uri.fsPath;
+		
+				// Create the full file path
+				const filePath = `${workspaceFolder}/${fileName}`;
+		
+				// Check if the file already exists
+				if (fs.existsSync(filePath)) {
+					vscode.window.showErrorMessage(`File ${fileName} already exists.`);
+					return;
+				}
+		
+				// Create the file
+				fs.writeFileSync(filePath, fileContent);
+		
+				// Open the newly created file
+				vscode.workspace.openTextDocument(filePath).then((document) => {
+					vscode.window.showTextDocument(document);
+				});
+			})
+		);
 	context.subscriptions.push(
 		vscode.commands.registerCommand('wedatatest.cleartest', () => {
 			provider.cleartest();

@@ -33,7 +33,7 @@
 				"command": "wedatatest.addTest",
 				"category": "wedata test",
 				"title": "add test item"
-			},	
+			},
 			{
 				"command": "wedatatest.cleartest",
 				"category": "wedata test",
@@ -68,5 +68,8 @@
 		"@typescript-eslint/parser": "^5.48.2",
 		"eslint": "^8.32.0",
 		"typescript": "^5.1.3"
+	},
+	"dependencies": {
+		"fs": "^0.0.1-security"
 	}
 }
