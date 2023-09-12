@@ -1,99 +1,61 @@
 {
-  "name": "wedata-test",
-  "displayName": "wedata test",
-  "description": "",
-  "version": "0.0.1",
-  "engines": {
-    "vscode": "^1.70.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "main": "./out/extension.js",
-  "contributes": {
-    "views": {
-      "test": [
-        {
-          "id": "testView",
-          "name": "Test View",
-          "newFile": true,
-          "icon": "media/logo.svg"
-        },
-        {
-          "id": "filesView",
-          "name": "Files View",
-          "icon": "media/logo.svg"
-        },
-        {
-          "type": "webview",
-          "id": "dbView",
-          "name": "Database View",
-          "icon": "media/logo.svg"
-        }
-      ]
-    },
-    "commands": [
-      {
-        "command": "wedata-test.showTreeView",
-        "title": "Show Tree View",
-        "icon":{
-          "light": "media/add.svg",
-          "dark": "media/add.svg"
-        }
-      },
-      {
-        "command": "wedata-test.hideTreeView",
-        "title": "Hide Tree View"
-      },
-      {
-        "command": "wedata-test.openWithExtension",
-        "title": "Open with 我的插件"
-      }
-    ],
-    "menus": {
-      "view/title": [
-        {
-          "command": "wedata-test.showTreeView",
-          "when": "view == testView",
-          "group": "navigation"
-        },
-        {
-          "command": "wedata-test.showTreeView",
-          "when": "view == testView"
-        }
-      ],
-      "view/item/context": [
-        {
-          "command": "wedata-test.showTreeView",
-          "when": "view == testView",
-          "group": "inline"
-        },
-        {
-          "command": "wedata-test.showTreeView",
-          "when": "view == testView"
-        }
-      ]
-    }
-  },
-  "scripts": {
-    "vscode:prepublish": "npm run compile",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "pretest": "npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
-  },
-  "devDependencies": {
-    "@types/vscode": "^1.81.0",
-    "@types/glob": "^8.1.0",
-    "@types/mocha": "^10.0.1",
-    "@types/node": "20.2.5",
-    "@typescript-eslint/eslint-plugin": "^5.59.8",
-    "@typescript-eslint/parser": "^5.59.8",
-    "eslint": "^8.41.0",
-    "glob": "^8.1.0",
-    "mocha": "^10.2.0",
-    "typescript": "^5.1.3",
-    "@vscode/test-electron": "^2.3.2"
-  }
+	"name": "wedata-test",
+	"description": "wedata test",
+	"version": "0.0.1",
+	"private": true,
+	"license": "MIT",
+	"engines": {
+		"vscode": "^1.70.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [],
+	"main": "./out/extension.js",
+	"contributes": {
+		"views": {
+			"test": [
+				{
+					"type": "webview",
+					"id": "wedatatest.testView",
+					"name": "wedata test"
+				}
+			]
+		},
+		"commands": [
+			{
+				"command": "wedatatest.addTest",
+				"category": "wedata test",
+				"title": "add test"
+			},
+			{
+				"command": "wedatatest.cleartest",
+				"category": "wedata test",
+				"title": "Clear test",
+				"icon": "$(clear-all)"
+			}
+		],
+		"menus": {
+			"view/title": [
+				{
+					"command": "wedatatest.cleartest",
+					"group": "navigation",
+					"when": "view == wedatatest.testView"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"lint": "eslint \"src/**/*.ts\"",
+		"watch": "tsc -w -p ./"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.73.0",
+		"@typescript-eslint/eslint-plugin": "^5.48.2",
+		"@typescript-eslint/parser": "^5.48.2",
+		"eslint": "^8.32.0",
+		"typescript": "^5.1.3"
+	}
 }
