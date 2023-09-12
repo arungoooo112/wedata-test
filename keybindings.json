@@ -1,0 +1,7 @@
+[
+	{
+	  "key": "ctrl+r",
+	  "command": "extension.runCode",
+	  "when": "editorTextFocus"
+	}
+  ]

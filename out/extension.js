@@ -3,33 +3,67 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.activate = void 0;
 const vscode = require("vscode");
 const fs = require("fs");
+const path = require("path");
 function activate(context) {
     const provider = new testViewProvider(context.extensionUri);
     context.subscriptions.push(vscode.window.registerWebviewViewProvider(testViewProvider.viewType, provider));
     context.subscriptions.push(vscode.commands.registerCommand('wedatatest.addTest', () => {
         provider.addTest();
     }));
-    context.subscriptions.push(vscode.commands.registerCommand('wedatatest.addTestFile', () => {
-        // Specify the file name and extension
-        const fileName = 'testFile.test.sql';
-        // Specify the file content
-        const fileContent = '-- This is a test SQL file';
+    let disposable = vscode.commands.registerCommand('extension.runCode', () => {
+        // 在这里执行你想要运行的代码
+        // 例如，你可以调用一个脚本或者执行一段特定的代码
+    });
+    context.subscriptions.push(disposable);
+    vscode.commands.registerCommand('wedatatest.addTestFile', () => {
+        // Specify the base file name and extension
+        const baseFileName = 'Untitled';
+        const fileExtension = '.test.sql';
         // Get the current workspace folder
         const workspaceFolder = vscode.workspace.workspaceFolders[0].uri.fsPath;
-        // Create the full file path
-        const filePath = `${workspaceFolder}/${fileName}`;
-        // Check if the file already exists
-        if (fs.existsSync(filePath)) {
-            vscode.window.showErrorMessage(`File ${fileName} already exists.`);
-            return;
+        // Specify the subdirectory name
+        const subdirectory = 'test';
+        // Create the subdirectory if it doesn't exist
+        const subdirectoryPath = path.join(workspaceFolder, subdirectory);
+        if (!fs.existsSync(subdirectoryPath)) {
+            fs.mkdirSync(subdirectoryPath);
         }
+        // Find the next available file name
+        let fileIndex = 1;
+        let fileName = `${baseFileName}-${fileIndex}${fileExtension}`;
+        let filePath = path.join(subdirectoryPath, fileName);
+        while (fs.existsSync(filePath)) {
+            fileIndex++;
+            fileName = `${baseFileName}-${fileIndex}${fileExtension}`;
+            filePath = path.join(subdirectoryPath, fileName);
+        }
+        // Specify the file content
+        const fileContent = `
+		/*
+		测试id：check_null_field
+		描述：检查字段是否为 NULL 值
+		参数：
+		  - p_table_name: 要检查的表
+		  - p_column_name: 要检查的字段
+		返回：
+		  - r_result: 字段包含 NULL 值
+	  */
+	  BEGIN
+	    -- 获取字段值
+  	SELECT count(1) INTO p_column_value FROM r_result WHERE p_column_name is null; -- 添加适当的 WHERE 子句来选择记录
+		-- 检查字段是否为 NULL
+		IF r_result IS NOT NULL THEN
+		  RAISE_APPLICATION_ERROR(-20001, 'The field contains NULL value.');
+		END IF;
+	END;
+		`;
         // Create the file
         fs.writeFileSync(filePath, fileContent);
         // Open the newly created file
         vscode.workspace.openTextDocument(filePath).then((document) => {
             vscode.window.showTextDocument(document);
         });
-    }));
+    });
     context.subscriptions.push(vscode.commands.registerCommand('wedatatest.cleartest', () => {
         provider.cleartest();
     }));

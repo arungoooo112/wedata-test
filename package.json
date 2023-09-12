@@ -24,6 +24,10 @@
 		},
 		"commands": [
 			{
+				"command": "extension.runCode",
+				"title": "Run Code"
+			  },
+			{
 				"command": "wedatatest.addTestFile",
 				"category": "wedata test",
 				"title": "add test",
