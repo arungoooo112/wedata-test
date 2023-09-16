@@ -13,6 +13,35 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function registerCommands() {
+
+    vscode.commands.registerCommand('wedata-test.showHello', async (node: TreeNode) => {
+        // Define the snippets to be inserted
+        const snippets = new vscode.SnippetString('/*\n' +
+            '测试id：check_null_field\n' +
+            '描述：检查字段是否为 NULL 值\n' +
+            '参数：\n' +
+            '  - p_table_name: 要检查的表\n' +
+            '  - p_column_name: 要检查的字段\n' +
+            '返回：\n' +
+            '  - r_result: 字段包含 NULL 值\n' +
+            '*/\n' +
+            'BEGIN\n' +
+            '\n' +
+            '-- 获取字段值\n' +
+            'SELECT count(1) INTO p_column_value FROM r_result WHERE p_column_name is null; -- 添加适当的 WHERE 子句来选择记录\n' +
+            '  -- 检查字段是否为 NULL\n' +
+            '  IF r_result IS NOT NULL THEN\n' +
+            '    RAISE_APPLICATION_ERROR(-20001, \'The field contains NULL value.\');\n' +
+            '  END IF;\n' +
+            '\n' +
+            'END;');
+    
+        // Insert the snippets into the active editor
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+            editor.insertSnippet(snippets);
+        }
+    });
     vscode.commands.registerCommand('wedata-test.showHello', (node: TreeNode) => {
         console.log(`Clicked on node: ${node.label}`);
         const helloText = 'hello';
