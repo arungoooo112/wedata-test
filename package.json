@@ -34,6 +34,11 @@
     },
     "commands": [
       {
+        "command": "wedata-test.openNewFile",
+        "title": "Show Tree View",
+        "icon": "$(new-file)"
+      },
+      {
         "command": "wedata-test.showTreeView",
         "title": "Show Tree View",
         "icon": {
@@ -53,7 +58,7 @@
     "menus": {
       "view/title": [
         {
-          "command": "wedata-test.showTreeView",
+          "command": "wedata-test.openNewFile",
           "when": "view == testView",
           "group": "navigation"
         },
