@@ -2,11 +2,10 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
 interface CursorRecord {
-    selection: vscode.Selection;
+    word: string;
     timestamp: number;
   }
   
-
   function getExtentionPath() : string{
     const currentExtension = vscode.extensions.getExtension('frankrun.wedata-test');
     if (!currentExtension) {return "";}
@@ -24,13 +23,19 @@ export async function activate(context: vscode.ExtensionContext) {
       const timestamp = Date.now();
     
       for (const selection of selections) {
+        
+        const wordRange = editor.document.getWordRangeAtPosition(selection.start);
+
+        if (!wordRange) { return;  };
+
+        const word = editor.document.getText(wordRange);
         const cursorRecord = {
-          selection: selection,
+          word: word,
           timestamp: timestamp
         };
     
         const keyExists = cursorRecords.some(record => {
-          return record.selection.isEqual(selection);
+          return record.word == word;
         });
     
         if (!keyExists) {
@@ -39,27 +44,6 @@ export async function activate(context: vscode.ExtensionContext) {
       }
     });
 
-
-    let disposable = vscode.commands.registerCommand('wedata-test.showTreeView',  () => {
-        const editor = vscode.window.activeTextEditor;
-        if (editor) {
-          const selections = editor.selections.slice(); // 创建副本
-
-          selections.sort((a, b) => {
-            // 按照光标的按下顺序排序
-            return a.anchor.compareTo(b.anchor);
-          });
-    
-          for (const selection of selections) {
-            // 在这里处理每个光标位置
-            const start = selection.start;
-            const end = selection.end;
-            console.log(`光标位置：${start.line}:${start.character} - ${end.line}:${end.character}`);
-          }
-        }
-      });
-    
-	context.subscriptions.push(disposable);
     registerCommands();
 
     // 获取插件的绝对路径
@@ -78,81 +62,80 @@ export async function activate(context: vscode.ExtensionContext) {
     const dbViewProvider = new MyWebviewViewProvider();
     vscode.window.registerWebviewViewProvider('dbView', dbViewProvider);
 
-    let func = (nume: number, feature: string) =>{
+    let runTest = async (cnt: number, label: string) => {
+        if (cnt == 0) return;
 
+        let items: vscode.QuickPickItem[] = [
+            { label: 'Validity', description: '第一个选项' },
+            { label: 'Validity', description: '第二个选项' },
+            { label: 'Validity', description: '第三个选项' }
+        ];
+
+        for (const node of treeDataProvider.SnippetNodes) {
+            if (node.feature == label && node.count == cnt) {
+                items.push({label: node.feature, description: node.label});
+            }
+        };
 
         const options: vscode.QuickPickOptions = {
             canPickMany: false, // 是否可以多选
             placeHolder: '请选择一个选项', // 弹窗的占位符
             ignoreFocusOut: true // 是否在失去焦点时关闭弹窗
         };
+
+        const selectedOption = await vscode.window.showQuickPick(items, options);
+        
+        if (selectedOption) {
+            // 用户选择了一个选项
+            if (selectedOption.description) {
+            const snippetsLabel = treeDataProvider.snippets[selectedOption.description];
+            vscode.window.showInformationMessage(`Test Running: ${snippetsLabel.body}`);
+        }
+        }
     
-        const items: vscode.QuickPickItem[] = [
-            { label: '选项1', description: '第一个选项' },
-            { label: '选项2', description: '第二个选项' },
-            { label: '选项3', description: '第三个选项' }
-        ];
-
-
-
+        cursorRecords = []; // 清空记录  
     };
 
-    context.subscriptions.push(vscode.commands.registerCommand('wedata-test.hideTreeView', async () => {
+    context.subscriptions.push(vscode.commands.registerCommand('wedata-test.Validity', async () => {
         cursorRecords.sort((a, b) => a.timestamp - b.timestamp);
         const cnt = cursorRecords.length;
 
-        for (const cursorRecord of cursorRecords) {
-          const selection = cursorRecord.selection;
-          const start = selection.start;
-          const end = selection.end;
-          vscode.window.showInformationMessage(`光标位置：${start.line}:${start.character} - ${end.line}:${end.character}`);
-        }
-    
-        cursorRecords = []; // 清空记录
+        if (cnt == 0) return;
+
+        let items: vscode.QuickPickItem[] = [
+            { label: 'Validity', description: '第一个选项' },
+            { label: 'Validity', description: '第二个选项' },
+            { label: 'Validity', description: '第三个选项' }
+        ];
+
+        for (const node of treeDataProvider.SnippetNodes) {
+            if (node.feature == 'Validity' && node.count == cnt) {
+                items.push({label: node.feature, description: node.label});
+            }
+        };
 
         const options: vscode.QuickPickOptions = {
             canPickMany: false, // 是否可以多选
             placeHolder: '请选择一个选项', // 弹窗的占位符
             ignoreFocusOut: true // 是否在失去焦点时关闭弹窗
         };
-    
-        const items: vscode.QuickPickItem[] = [
-            { label: '选项1', description: '第一个选项' },
-            { label: '选项2', description: '第二个选项' },
-            { label: '选项3', description: '第三个选项' }
-        ];
-    
         const selectedOption = await vscode.window.showQuickPick(items, options);
-    
+        
         if (selectedOption) {
             // 用户选择了一个选项
-            vscode.window.showInformationMessage(`你选择了: ${selectedOption.label}`);
+            if (selectedOption.description) {
+            const snippetsLabel = treeDataProvider.snippets[selectedOption.description];
+            vscode.window.showInformationMessage(`Test Running: ${snippetsLabel.body}`);
         }
-
-
+        }
+    
+        cursorRecords = []; // 清空记录
       }));
 }
 
 function registerCommands() {
     vscode.commands.registerCommand('wedata-test.runTest', async () => {
-        const options: vscode.QuickPickOptions = {
-            canPickMany: false, // 是否可以多选
-            placeHolder: '请选择一个选项', // 弹窗的占位符
-            ignoreFocusOut: true // 是否在失去焦点时关闭弹窗
-        };
-    
-        const items: vscode.QuickPickItem[] = [
-            { label: '选项1', description: '第一个选项' },
-            { label: '选项2', description: '第二个选项' },
-            { label: '选项3', description: '第三个选项' }
-        ];
-    
-        const selectedOption = await vscode.window.showQuickPick(items, options);
-    
-        if (selectedOption) {
-            // 用户选择了一个选项
-            vscode.window.showInformationMessage(`你选择了: ${selectedOption.label}`);
-        }
+ 
     });
 
     
@@ -213,14 +196,18 @@ function registerCommands() {
     });
 }
 class SnippetNode extends vscode.TreeItem {
-
     public body:string;
     public feature: string;
     public count: number;
+    public head: string;
+    public  override  label: string;
 
     constructor(label: string, code: any) {
         super(label);
+        this.label = label;
+
         this.tooltip = code.description;
+        this.head = code.description;
         this.body = code.body.join("\n");
         this.feature = code.description.substring(0, code.description.indexOf(':')).trim();    
        
@@ -251,15 +238,18 @@ class SnippetNode extends vscode.TreeItem {
         }
         else {
             this.iconPath = new vscode.ThemeIcon('star');
-        }
-        
-          
+        }      
     }
 }
 
 // 创建树视图提供者类
 class SnippetsTreeDataProvider implements vscode.TreeDataProvider<SnippetNode> {
-    constructor(public snippets: any) {}
+    public snippets: any;
+    public SnippetNodes: SnippetNode[];
+    constructor(snippets: any) {
+        this.snippets = snippets;
+        this.SnippetNodes = [];
+    }
 
     getTreeItem(element: SnippetNode): vscode.TreeItem {
         return element;
@@ -268,7 +258,8 @@ class SnippetsTreeDataProvider implements vscode.TreeDataProvider<SnippetNode> {
     getChildren(element?: SnippetNode): vscode.ProviderResult<SnippetNode[]> {
         if (!element) {
             // 根节点，返回所有代码片段
-            return Object. keys(this.snippets).map(label => new SnippetNode(label, this.snippets[label]));
+            this.SnippetNodes = Object.keys(this.snippets).map(label => new SnippetNode(label, this.snippets[label]));
+            return this.SnippetNodes;
         }
         return [];
     }
