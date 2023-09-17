@@ -23,8 +23,8 @@
           "hoverEnabled": true
         },
         {
-          "id": "filesView",
-          "name": "Files View",
+          "id": "historyView",
+          "name": "History View",
           "icon": "media/logo.svg"
         },
         {
@@ -49,7 +49,7 @@
       {
         "command": "wedata-test.showHello",
         "title": "show Hello",
-        "icon": "$(pencil)"
+        "icon": "$(plus)"
       },
       {
         "command": "wedata-test.refresh",

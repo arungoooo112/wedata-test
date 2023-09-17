@@ -58,6 +58,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
     // 注册树视图
     vscode.window.registerTreeDataProvider('testView', treeDataProvider);
+
+    const historyTreeDataProvider = new SnippetsTreeDataProvider('');
+
+    // 注册树视图
+    vscode.window.registerTreeDataProvider('historyView', historyTreeDataProvider);
  
     const dbViewProvider = new MyWebviewViewProvider();
     vscode.window.registerWebviewViewProvider('dbView', dbViewProvider);
@@ -91,7 +96,7 @@ export async function activate(context: vscode.ExtensionContext) {
         if (selectedOption) {
             // 用户选择了一个选项
             if (selectedOption.description) {
-            let snippets = treeDataProvider.snippets[selectedOption.description]
+            let snippets = treeDataProvider.snippets[selectedOption.description];
             let snibody: string = snippets.body.join("\n");
 
             for (let i = 1; i <= cursorRecords.length; i++) {
@@ -108,8 +113,10 @@ export async function activate(context: vscode.ExtensionContext) {
                   // todo: connect database
                 await  new Promise(resolve => setTimeout(resolve, 2000));
                 vscode.window.showInformationMessage(`Test Success: ${snibody}`);
+                if (selectedOption.description) {
+                  historyTreeDataProvider.addSnippet(selectedOption.description, snippets);
+                }
               })
-              
         }
         }
     
@@ -229,7 +236,6 @@ class SnippetNode extends vscode.TreeItem {
           }
           else if (this.feature == 'Completeness'){
             this.iconPath = new vscode.ThemeIcon('pie-chart');
-        
           }
           else if (this.feature == 'Uniqueness'){
             this.iconPath = new vscode.ThemeIcon('key');
@@ -244,10 +250,31 @@ class SnippetNode extends vscode.TreeItem {
     }
 }
 
-// 创建树视图提供者类
+// 创建树视图提供者类·
 class SnippetsTreeDataProvider implements vscode.TreeDataProvider<SnippetNode> {
     public snippets: any;
     public SnippetNodes: SnippetNode[];
+
+    private _onDidChangeTreeData: vscode.EventEmitter<SnippetNode | undefined | null | void> = new vscode.EventEmitter<SnippetNode | undefined | null | void>();
+    readonly onDidChangeTreeData: vscode.Event<SnippetNode | undefined | null | void> = this._onDidChangeTreeData.event;
+    refresh(): void {
+      this._onDidChangeTreeData.fire(undefined);
+   }
+  //   updateItem(label: string, description: string): void {
+  //     const item = this.SnippetNodes.find((item) => item.label === label);
+  //     if (item) {
+  //         item.description = description;
+  //         this._onDidChangeTreeData.fire(item);
+  //     }
+  // }
+
+  // 新增节点的方法
+    addSnippet(label: string, snippet: string): void {
+      //this.snippets[label] = snippet;
+      const newSnippetNode = new SnippetNode(label, snippet);
+      this.SnippetNodes.push(newSnippetNode);
+      this._onDidChangeTreeData.fire(undefined); // 触发树视图数据更改事件，传递新增的节点
+    }
     constructor(snippets: any) {
         this.snippets = snippets;
         this.SnippetNodes = [];
@@ -261,9 +288,9 @@ class SnippetsTreeDataProvider implements vscode.TreeDataProvider<SnippetNode> {
         if (!element) {
             // 根节点，返回所有代码片段
             this.SnippetNodes = Object.keys(this.snippets).map(label => new SnippetNode(label, this.snippets[label]));
-            return this.SnippetNodes;
+            return Promise.resolve(this.SnippetNodes);
         }
-        return [];
+        return Promise.resolve([]);
     }
 }
 
