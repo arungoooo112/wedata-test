@@ -181,7 +181,6 @@ function registerCommands() {
             console.log(node.body);
           //  vscode.window.showInformationMessage(node.body);
             const s = new vscode.SnippetString(node.body);
-            vscode.window.showInformationMessage(s.value);
            vscode.window.activeTextEditor?.insertSnippet(s); 
         } 
         }
@@ -308,6 +307,9 @@ class MyWebviewViewProvider implements vscode.WebviewViewProvider {
         });
     }
 }
+
+
+
 
 export function deactivate() {
     console.log('Your extension "wedata-test" has been deactivated.');
