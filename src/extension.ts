@@ -62,13 +62,16 @@ export async function activate(context: vscode.ExtensionContext) {
     const dbViewProvider = new MyWebviewViewProvider();
     vscode.window.registerWebviewViewProvider('dbView', dbViewProvider);
 
-    let runTest = async (cnt: number, label: string) => {
+    let runTest = async (label: string) => {
+
+        cursorRecords.sort((a, b) => a.timestamp - b.timestamp);
+        const cnt = cursorRecords.length;
         if (cnt == 0) return;
 
         let items: vscode.QuickPickItem[] = [
-            { label: 'Validity', description: '第一个选项' },
-            { label: 'Validity', description: '第二个选项' },
-            { label: 'Validity', description: '第三个选项' }
+            { label: label, description: '第一个选项' },
+            { label: label, description: '第二个选项' },
+            { label: label, description: '第三个选项' }
         ];
 
         for (const node of treeDataProvider.SnippetNodes) {
@@ -88,8 +91,25 @@ export async function activate(context: vscode.ExtensionContext) {
         if (selectedOption) {
             // 用户选择了一个选项
             if (selectedOption.description) {
-            const snippetsLabel = treeDataProvider.snippets[selectedOption.description];
-            vscode.window.showInformationMessage(`Test Running: ${snippetsLabel.body}`);
+            let snippets = treeDataProvider.snippets[selectedOption.description]
+            let snibody: string = snippets.body.join("\n");
+
+            for (let i = 1; i <= cursorRecords.length; i++) {
+                const pattern = new RegExp(`\\$${i}`, 'g');
+                snibody = snibody.replace (pattern, cursorRecords[i - 1].word);
+              }
+               await vscode.window.withProgress({
+                location: vscode.ProgressLocation.Notification,
+              }, async (progress) => {
+                progress.report({
+                    message: 'Testing...',
+                  });
+                
+                  // todo: connect database
+                await  new Promise(resolve => setTimeout(resolve, 2000));
+                vscode.window.showInformationMessage(`Test Success: ${snibody}`);
+              })
+              
         }
         }
     
@@ -97,39 +117,22 @@ export async function activate(context: vscode.ExtensionContext) {
     };
 
     context.subscriptions.push(vscode.commands.registerCommand('wedata-test.Validity', async () => {
-        cursorRecords.sort((a, b) => a.timestamp - b.timestamp);
-        const cnt = cursorRecords.length;
-
-        if (cnt == 0) return;
-
-        let items: vscode.QuickPickItem[] = [
-            { label: 'Validity', description: '第一个选项' },
-            { label: 'Validity', description: '第二个选项' },
-            { label: 'Validity', description: '第三个选项' }
-        ];
-
-        for (const node of treeDataProvider.SnippetNodes) {
-            if (node.feature == 'Validity' && node.count == cnt) {
-                items.push({label: node.feature, description: node.label});
-            }
-        };
-
-        const options: vscode.QuickPickOptions = {
-            canPickMany: false, // 是否可以多选
-            placeHolder: '请选择一个选项', // 弹窗的占位符
-            ignoreFocusOut: true // 是否在失去焦点时关闭弹窗
-        };
-        const selectedOption = await vscode.window.showQuickPick(items, options);
-        
-        if (selectedOption) {
-            // 用户选择了一个选项
-            if (selectedOption.description) {
-            const snippetsLabel = treeDataProvider.snippets[selectedOption.description];
-            vscode.window.showInformationMessage(`Test Running: ${snippetsLabel.body}`);
-        }
-        }
-    
-        cursorRecords = []; // 清空记录
+        runTest("Validity");
+      }));
+      context.subscriptions.push(vscode.commands.registerCommand('wedata-test.Reliability', async () => {
+        runTest("Reliability");
+      }));
+      context.subscriptions.push(vscode.commands.registerCommand('wedata-test.Accuracy', async () => {
+        runTest("Accuracy");
+      }));
+      context.subscriptions.push(vscode.commands.registerCommand('wedata-test.Completeness', async () => {
+        runTest("Completeness");
+      }));
+      context.subscriptions.push(vscode.commands.registerCommand('wedata-test.Uniqueness', async () => {
+        runTest("Uniqueness");
+      }));
+      context.subscriptions.push(vscode.commands.registerCommand('wedata-test.Consistency', async () => {
+        runTest("Consistency");
       }));
 }
 
