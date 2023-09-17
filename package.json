@@ -35,10 +35,6 @@
     },
     "commands": [
       {
-        "command": "wedata-test.showCommandDialog",
-        "title": "wedata: show Command Dialog"
-      },
-      {
         "command": "wedata-test.openSetting",
         "title": "open config",
         "icon": "$(gear)"
@@ -73,9 +69,18 @@
       {
         "command": "wedata-test.openWithExtension",
         "title": "Open with 我的插件"
+      },
+      {
+        "command": "wedata-test.runTest",
+        "title": "Wedata: Launch Test"
       }
     ],
     "menus": {
+      "editor/context": [
+        {
+          "command": "wedata-test.runTest"
+        }
+      ], 
       "view/title": [
         {
           "command": "wedata-test.openSetting",

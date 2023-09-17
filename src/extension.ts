@@ -7,52 +7,25 @@ export function activate(context: vscode.ExtensionContext) {
 
     console.log('Congratulations, your extension "wedata-test" is now active!');
 
-    let disposable = vscode.commands.registerCommand('wedata-test.showTreeView', () => {
-		// The code you place here will be executed every time your command is executed
+    let disposable = vscode.commands.registerCommand('wedata-test.showTreeView',  () => {
+        const editor = vscode.window.activeTextEditor;
+        if (editor) {
+          const selections = editor.selections.slice(); // 创建副本
 
-		const columnToShowIn = vscode.window.activeTextEditor
-        ? vscode.window.activeTextEditor.viewColumn
-        : undefined;
-
-		const currentPanel = vscode.window.createWebviewPanel(
-			'vscweHello',
-			'Hello World',
-			<vscode.ViewColumn>columnToShowIn,
-			{
-				enableScripts: true,
-			}
-		);
-
-        const assetUri = (fp: string) => {
-
-            const currentExtension = vscode.extensions.getExtension('frankrun.wedata-test');
-            if (!currentExtension) {return;}
-            
-            const fragments = fp.split('/');
-
-            let furi =  vscode.Uri.file(
-                path.join(currentExtension.extensionPath, ...fragments)
-            );
-        console.log(furi.path);
-			return currentPanel.webview.asWebviewUri(furi);
-		};
-
-		const { cspSource } = currentPanel.webview;
-
-		currentPanel.webview.html = `
-			<!DOCTYPE html>
-			<html lang="en">
-			<head>
-				<link rel="stylesheet" href="${assetUri('node_modules/vscode-codicons/dist/codicon.css')}" id="vscode-codicon-stylesheet">
-				<script src="${assetUri('node_modules/@bendera/vscode-webview-elements/dist/bundled.js')}" type="module"></script>
-			</head>
-			<body>
-			<vscode-button>Hello World!</vscode-button>
-			</body>
-			</html>
-		`;
-	});
-
+          selections.sort((a, b) => {
+            // 按照光标的按下顺序排序
+            return a.anchor.compareTo(b.anchor);
+          });
+    
+          for (const selection of selections) {
+            // 在这里处理每个光标位置
+            const start = selection.start;
+            const end = selection.end;
+            console.log(`光标位置：${start.line}:${start.character} - ${end.line}:${end.character}`);
+          }
+        }
+      });
+    
 	context.subscriptions.push(disposable);
     registerCommands();
 
@@ -77,7 +50,7 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function registerCommands() {
-    vscode.commands.registerCommand('wedata-test.showCommandDialog', async () => {
+    vscode.commands.registerCommand('wedata-test.runTest', async () => {
         const options: vscode.QuickPickOptions = {
             canPickMany: false, // 是否可以多选
             placeHolder: '请选择一个选项', // 弹窗的占位符
