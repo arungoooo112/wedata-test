@@ -1,0 +1,44 @@
+{
+	"Test1: unique key": {
+		"scope": "sql",
+		"prefix": "ittt.test1",
+		"body": [
+			"console.log('$1');",
+			"$2"
+		],
+		
+		"description": "Log output to console"
+	}
+
+	,
+	"Test2: to console": {
+		"scope": "javascript,typescript",
+		"prefix": "test1",
+		"body": [
+			"console.log('$1');",
+			"$2"
+		],
+		"description": "Log output to console"
+	}
+	,
+	"Test3: to console": {
+		"scope": "javascript,typescript",
+		"prefix": "test1",
+		"body": [
+			"console.log('$1');",
+			"$2"
+		],
+		"description": "Log output to console"
+	}
+	,
+	"Test4: to console": {
+		"scope": "javascript,typescript",
+		"prefix": "test1",
+		"body": [
+			"console.log('$1');",
+			"$2"
+		],
+		"description": "Log output to console"
+	}
+}
+

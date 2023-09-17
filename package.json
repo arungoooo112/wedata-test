@@ -1,5 +1,6 @@
 {
   "name": "wedata-test",
+  "publisher": "frankrun",
   "displayName": "wedata test",
   "description": "",
   "version": "0.0.1",
@@ -34,9 +35,28 @@
     },
     "commands": [
       {
+        "command": "wedata-test.showCommandDialog",
+        "title": "wedata: show Command Dialog"
+      },
+      {
+        "command": "wedata-test.openSetting",
+        "title": "open config",
+        "icon": "$(gear)"
+      },
+      {
         "command": "wedata-test.openNewFile",
         "title": "Show Tree View",
         "icon": "$(new-file)"
+      },
+      {
+        "command": "wedata-test.showHello",
+        "title": "show Hello",
+        "icon": "$(run)"
+      },
+      {
+        "command": "wedata-test.refresh",
+        "title": "showHello",
+        "icon": "$(refresh)"
       },
       {
         "command": "wedata-test.showTreeView",
@@ -58,23 +78,32 @@
     "menus": {
       "view/title": [
         {
+          "command": "wedata-test.openSetting",
+          "when": "view == testView"
+        },
+        {
           "command": "wedata-test.openNewFile",
           "when": "view == testView",
           "group": "navigation"
         },
         {
-          "command": "wedata-test.showTreeView",
-          "when": "view == testView"
+          "command": "wedata-test.refresh",
+          "when": "view == testView",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "wedata-test.showTreeView",
+          "command": "wedata-test.showHello",
           "when": "view == testView",
           "group": "inline"
         },
         {
-          "command": "wedata-test.showTreeView",
+          "command": "wedata-test.showHello",
+          "when": "view == testView"
+        },
+        {
+          "command": "wedata-test.hideTreeView",
           "when": "view == testView"
         }
       ]
@@ -100,5 +129,9 @@
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
     "typescript": "^5.1.3"
-  }
+  },
+	"dependencies": {
+		"@bendera/vscode-webview-elements": "^0.1.11-alpha.7",
+		"vscode-codicons": "0.0.13"
+	}
 }
