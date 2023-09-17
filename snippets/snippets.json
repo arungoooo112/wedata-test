@@ -7,7 +7,7 @@
 			"$2"
 		],
 		
-		"description": "Log output to console"
+		"description": "Completeness: Log output to console"
 	}
 
 	,
@@ -18,7 +18,7 @@
 			"console.log('$1');",
 			"$2"
 		],
-		"description": "Log output to console"
+		"description": "Accuracy: Log output to console"
 	}
 	,
 	"Test3: to console": {
@@ -28,7 +28,7 @@
 			"console.log('$1');",
 			"$2"
 		],
-		"description": "Log output to console"
+		"description": "Consistency: Log output to console"
 	}
 	,
 	"Test4: to console": {
@@ -38,7 +38,37 @@
 			"console.log('$1');",
 			"$2"
 		],
-		"description": "Log output to console"
+		"description": "Uniqueness: Log output to console"
+	}
+	,
+	"Test5: to console": {
+		"scope": "javascript,typescript",
+		"prefix": "test1",
+		"body": [
+			"console.log('$1');",
+			"$2"
+		],
+		"description": "Validity: Log output to console"
+	}
+	,
+	"Test6: to console": {
+		"scope": "javascript,typescript",
+		"prefix": "test1",
+		"body": [
+			"console.log('$1');",
+			"$2"
+		],
+		"description": "Reliability: Log output to console"
+	}
+	,
+	"Test0: to console": {
+		"scope": "javascript,typescript",
+		"prefix": "test1",
+		"body": [
+			"console.log('$1');",
+			"$2"
+		],
+		"description": "Business: Log output to console"
 	}
 }
 

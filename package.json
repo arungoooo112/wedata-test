@@ -17,8 +17,10 @@
         {
           "id": "testView",
           "name": "Test View",
+          "treeView": "testView",
           "newFile": true,
-          "icon": "media/logo.svg"
+          "icon": "media/logo.svg",
+          "hoverEnabled": true
         },
         {
           "id": "filesView",
@@ -47,7 +49,7 @@
       {
         "command": "wedata-test.showHello",
         "title": "show Hello",
-        "icon": "$(run)"
+        "icon": "$(pencil)"
       },
       {
         "command": "wedata-test.refresh",
@@ -73,14 +75,65 @@
       {
         "command": "wedata-test.runTest",
         "title": "Wedata: Launch Test"
+      },
+      {
+        "command": "wedata-test.Validity",
+        "title": "Validity"
+      },
+      {
+        "command": "wedata-test.Reliability",
+        "title": "Reliability"
+      },
+      {
+        "command": "wedata-test.Accuracy",
+        "title": "Accuracy"
+      },
+      {
+        "command": "wedata-test.Completeness",
+        "title": "Completeness"
+      },
+      {
+        "command": "wedata-test.Uniqueness",
+        "title": "Uniqueness"
+      },
+      {
+        "command": "wedata-test.Consistency",
+        "title": "Consistency"
+      }
+    ],
+    "submenus": [
+      {
+        "id": "wedata.test",
+        "label": "Wedata: Select Test"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "wedata-test.runTest"
+          "submenu": "wedata.test",
+          "group": "wedata"
         }
-      ], 
+      ],
+      "wedata.test": [
+        {
+          "command": "wedata-test.Validity"
+        },
+        {
+          "command": "wedata-test.Reliability"
+        },
+        {
+          "command": "wedata-test.Accuracy"
+        },
+        {
+          "command": "wedata-test.Completeness"
+        },
+        {
+          "command": "wedata-test.Uniqueness"
+        },
+        {
+          "command": "wedata-test.Consistency"
+        }
+      ],
       "view/title": [
         {
           "command": "wedata-test.openSetting",
