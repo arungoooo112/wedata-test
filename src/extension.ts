@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
+import * as fs from 'fs';
 
 export function activate(context: vscode.ExtensionContext) {
 
@@ -125,20 +126,24 @@ function registerCommands() {
         }
     });
     vscode.commands.registerCommand('wedata-test.showHello', async (node: SnippetNode) => {
-        // Define the snippets to be inserted
-        const tooltip = node.tooltip;
-        const snippet = tooltip instanceof vscode.MarkdownString ? tooltip.value : tooltip;
-  
-        if (snippet) {
-            vscode.window.showInformationMessage('wedata-test.showHello');
-            console.log(snippet);
-        }
-        // Insert the snippets into the active editor
+ 
+        if (typeof node.label == 'string') {
+            //这一段有输出
+            //vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(node.label));
+        };
 
-        vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString('wedata-test.showHello'));
+        if (node.body) {
+            console.log(node.body);
+          //  vscode.window.showInformationMessage(node.body);
+            const s = new vscode.SnippetString(node.body);
+            vscode.window.showInformationMessage(s.value);
+           vscode.window.activeTextEditor?.insertSnippet(s); 
+           vscode.window.activeTextEditor?.insertSnippet(s); 
+
+        } 
+        }
+    );
         
-    
-    });
     vscode.commands.registerCommand('wedata-test.refresh', () => {
         console.log('Show Tree View command executed');
         vscode.commands.executeCommand('setContext', 'showTreeView', true);
@@ -156,16 +161,20 @@ function registerCommands() {
     });
 }
 class SnippetNode extends vscode.TreeItem {
-    
-    constructor(label: string, code: string) {
+
+    //override readonly iconPath = new ThemeIcon("file-directory");
+    public body:string;
+
+    constructor(label: string, code: any) {
         super(label);
-        this.tooltip = code;
+        this.tooltip = code.description;
+        this.body = code.body.join("\n");
     }
 }
 
 // 创建树视图提供者类
 class SnippetsTreeDataProvider implements vscode.TreeDataProvider<SnippetNode> {
-    constructor(private snippets: { [key: string]: string }) {}
+    constructor(public snippets: any) {}
 
     getTreeItem(element: SnippetNode): vscode.TreeItem {
         return element;
@@ -174,7 +183,7 @@ class SnippetsTreeDataProvider implements vscode.TreeDataProvider<SnippetNode> {
     getChildren(element?: SnippetNode): vscode.ProviderResult<SnippetNode[]> {
         if (!element) {
             // 根节点，返回所有代码片段
-            return Object.keys(this.snippets).map(label => new SnippetNode(label, this.snippets[label]));
+            return Object. keys(this.snippets).map(label => new SnippetNode(label, this.snippets[label]));
         }
         return [];
     }
