@@ -1,10 +1,6 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as fs from 'fs';
-interface CursorRecord {
-  word: string;
-  timestamp: number;
-}
 
 function getExtentionPath(): string {
   const currentExtension = vscode.extensions.getExtension('frankrun.wedata-test');
@@ -15,33 +11,21 @@ function getExtentionPath(): string {
 export async function activate(context: vscode.ExtensionContext) {
 
   console.log('Congratulations, your extension "wedata-test" is now active!');
-  let cursorRecords: CursorRecord[] = [];
-
+  let cursorRecords: string[] = [];
+  
   vscode.window.onDidChangeTextEditorSelection(event => {
-    const editor = event.textEditor;
-    const selections = editor.selections;
-    const timestamp = Date.now();
-
+    const selections = event.selections;
+    if (selections.length <= 1) return;
+    cursorRecords = [];
     for (const selection of selections) {
-
-      const wordRange = editor.document.getWordRangeAtPosition(selection.start);
-
-      if (!wordRange) { return; };
-
-      const word = editor.document.getText(wordRange);
-      const cursorRecord = {
-        word: word,
-        timestamp: timestamp
-      };
-
-      const keyExists = cursorRecords.some(record => {
-        return record.word == word;
-      });
-
-      if (!keyExists) {
-        cursorRecords.push(cursorRecord);
+      const wordRange = event.textEditor.document.getWordRangeAtPosition(selection.start);
+      if (!wordRange) {
+        return;
       }
+      const word = event.textEditor.document.getText(wordRange);
+      cursorRecords.push(word);
     }
+    console.log(selections.length, ': ', cursorRecords.join('; '));
   });
 
   registerCommands();
@@ -69,8 +53,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   let runTest = async (label: string) => {
 
-    cursorRecords.sort((a, b) => a.timestamp - b.timestamp);
-    const cnt = cursorRecords.length;
+   const cnt = cursorRecords.length;
     if (cnt == 0) return;
 
     let items: vscode.QuickPickItem[] = [
@@ -87,7 +70,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
     const options: vscode.QuickPickOptions = {
       canPickMany: false, // 是否可以多选
-      placeHolder: '请选择一个选项', // 弹窗的占位符
+      placeHolder: cursorRecords.join('; '), // 弹窗的占位符
       ignoreFocusOut: true // 是否在失去焦点时关闭弹窗
     };
 
@@ -101,7 +84,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
         for (let i = 1; i <= cursorRecords.length; i++) {
           const pattern = new RegExp(`\\$${i}`, 'g');
-          snibody = snibody.replace(pattern, cursorRecords[i - 1].word);
+          snibody = snibody.replace(pattern, cursorRecords[i - 1]);
         }
         await vscode.window.withProgress({
           location: vscode.ProgressLocation.Notification,
@@ -112,7 +95,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
           // todo: connect database
           await new Promise(resolve => setTimeout(resolve, 2000));
-          vscode.window.showInformationMessage(`Test Success: ${snibody}`);
+          vscode.window.showErrorMessage(`Test Fail: ${snibody}`);
           if (selectedOption.description) {
             historyTreeDataProvider.addSnippet(selectedOption.description, snippets);
           }
