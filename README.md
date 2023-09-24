@@ -69,3 +69,36 @@ You can author your README using Visual Studio Code. Here are some useful editor
 * [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
 
 **Enjoy!**
+
+```mermaid
+
+```
+
+classDiagram
+    class vscodeExtensionContext
+    class vscodeTreeDataProvider
+    class vscodeWebviewViewProvider
+    class vscodeQuickPickItem
+    class vscodeQuickPickOptions
+    class vscodewindow
+    class vscodecommands
+    class vscodeTextEditor
+    class SnippetNode
+    class SnippetsTreeDataProvider
+    class MyWebviewViewProvider
+
+    vscodeExtensionContext --> vscodeDisposable
+    vscodeTreeDataProvider --|> vscodeEventEmitter
+    vscodeWebviewViewProvider ..> vscodeWebviewView
+    vscodeQuickPickOptions ..> vscodeQuickPickItem
+    vscodewindow ..> vscodeTextEditorSelectionChangeEvent
+    vscodewindow ..> vscodeTreeDataProvider
+    vscodewindow ..> vscodeWebviewViewProvider
+    vscodecommands ..> vscodeDisposable
+    vscodecommands ..> vscodeTextEditor
+    vscodecommands ..> vscodeTreeDataProvider
+    vscodecommands ..> vscodeWebviewViewProvider
+    vscodeTextEditor ..> vscodeTextDocument
+    SnippetsTreeDataProvider --|> vscodeTreeDataProvider
+    MyWebviewViewProvider ..> vscodeWebviewView
+    SnippetNode --|> vscodeTreeItem

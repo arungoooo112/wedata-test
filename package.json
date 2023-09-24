@@ -188,8 +188,10 @@
     "mocha": "^10.2.0",
     "typescript": "^5.1.3"
   },
-	"dependencies": {
-		"@bendera/vscode-webview-elements": "^0.1.11-alpha.7",
-		"vscode-codicons": "0.0.13"
-	}
+  "dependencies": {
+    "@bendera/vscode-webview-elements": "^0.1.11-alpha.7",
+    "mysql": "^2.18.1",
+    "pg": "^8.11.3",
+    "vscode-codicons": "0.0.13"
+  }
 }
