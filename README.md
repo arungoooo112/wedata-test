@@ -1,86 +1,45 @@
-# wedata-test README
+# WeData Test
 
-This is the README for your extension "wedata-test". After writing up a brief description, we recommend including the following sections.
+Wedata 测试扩展提供了在项目中测试和管理数据质量规则的功能。它包括一个树视图，用于显示和管理不同数据质量规则的代码片段，以及用于运行测试、打开新文件、刷新树视图和打开自定义数据库视图的命令。
 
-## Features
+## 功能
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **树视图**：该扩展提供了一个树视图，用于显示不同数据质量规则的代码片段。您可以展开和折叠树节点，以查看和管理可用的代码片段。
 
-For example if there is an image subfolder under your extension project workspace:
+- **代码片段插入**：您可以通过选择树视图中的节点或使用“打开新文件”命令将代码片段插入到活动编辑器中。插入的代码片段包含针对特定数据质量规则的预定义代码。
 
-\!\[feature X\]\(images/feature-x.png\)
+- **测试执行**：该扩展包括一个运行测试的命令。然而，代码片段中没有提供测试执行逻辑的实现。您可以根据需要扩展该扩展，添加执行测试所需的逻辑。
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- **自定义数据库视图**：该扩展提供一个打开自定义数据库视图的命令。代码片段注册了一个命令，使用自定义 URI (`wedata-db://dbView`) 执行 `vscode.open` 命令来打开自定义的数据库视图。您可以根据特定需求自定义 URI 方案和目标视图。
 
-## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## 使用方法
 
-## Extension Settings
+1. 在 Visual Studio Code 中安装 WeData Test扩展。
+2. 单击侧边栏中的树视图图标打开扩展的树视图。
+3. 展开树节点以查看不同数据质量规则的可用代码片段。
+4. 要将代码片段插入到活动编辑器中：
+   - 在树视图中选择一个节点，然后单击“插入代码片段”按钮。
+   - 或者，使用“打开新文件”命令，它会将一个预定义的代码片段插入到活动编辑器中。
+5. 根据项目的要求自定义代码片段，并添加执行测试所需的逻辑。
+6. 使用提供的命令来运行测试、刷新树视图或打开自定义数据库视图。
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## 后续开发
 
-For example:
 
-This extension contributes the following settings:
+- **实现测试执行逻辑**：已注册 `wedata-test.runTest` 命令，但没有提供实现。添加必要的逻辑来执行根据插入的代码片段运行测试。
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- **扩展树视图**：可以向树视图添加更多的节点和代码片段，以覆盖更多的数据质量规则或类别。修改 `SnippetsTreeDataProvider` 类以包含新的代码片段，并相应地更新 `addSnippet` 方法。
 
-## Known Issues
+- **自定义数据库视图**：`wedata-test.openDBView` 命令当前使用预定义的 URI (`wedata-db://dbView`) 打开自定义数据库视图。可以自定义 URI 方案，并实现逻辑来打开适合您需求的视图。
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
 
-## Release Notes
-
-Users appreciate release notes as you update your extension.
+## 发布说明
 
 ### 1.0.0
 
-Initial release of ...
+WeData Test 扩展的初始版本。
 
-### 1.0.1
+## 许可证
 
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
-具有良好的可扩展性。开发者可以根据需要添加新的功能、集成其他插件或定制插件行为。这使得插件能够满足不同用户的需求，并随着VS Code的更新进行升级和优化。
-这个插件的技术实现上具有以下特点和优点：
-VS Code扩展开发: 该插件是在VS Code的扩展开发框架下实现的，利用了VS Code提供的API和生态系统。这使得插件能够与VS Code的核心功能进行无缝集成，并且可以利用丰富的API进行功能扩展。
-TreeDataProvider: 插件使用TreeDataProvider接口实现了树形数据的提供，使得插件可以展示层次化的数据结构，方便用户浏览和操作。这种方式能够提供更好的可视化效果和用户体验。
-WebviewViewProvider: 通过WebviewViewProvider实现了Webview视图的提供，可以在插件中嵌入自定义的Web界面。这使得插件可以展示更复杂的用户界面，与用户进行交互，并且可以利用Web技术栈构建灵活的前端界面。
-命令和事件处理: 插件利用vscode.commands和事件机制来处理用户的命令和编辑器事件。这使得插件能够响应用户的操作，并执行相应的逻辑处理。通过命令和事件的机制，插件可以与用户进行交互，并对编辑器的状态和操作进行实时响应。
-可扩展性: 基于VS Code扩展开发框架，该插件具有良好的可扩展性。开发者可以根据自己的需求添加新的功能和特性，与其他插件进行集成，或者定制化插件的行为。这使得插件能够满足不同用户的需求，并且可以随着VS Code的更新进行升级和优化。
-总的来说，该插件利用了VS Code强大的扩展开发框架和丰富的API，实现了基于树形数据和Web界面的功能扩展。它具有良好的可扩展性和灵活性，能够提供更好的用户体验，并且可以根据个人需求进行定制化。
-
-
-基于VS Code扩展开发框架：该插件是基于VS Code扩展开发框架构建的，这意味着它与VS Code紧密集成，并能够利用丰富的API、工具和生态系统。这种基于扩展开发的方法使插件能够直接利用VS Code的强大功能和用户界面，提供一致的用户体验。
-树形数据展示与交互：插件利用TreeDataProvider接口提供树形数据展示，使用户能够以层次化方式浏览和操作数据。这种展示形式便于用户快速定位和导航，提高了效率和可用性。
-自定义Web界面和交互：插件通过WebviewViewProvider支持嵌入自定义的Web界面。这使得插件可以展示复杂、交互式的用户界面，利用前端技术栈构建灵活的界面元素和交互逻辑。
-命令和事件处理：插件利用vscode.commands和事件机制处理用户的命令和编辑器事件。这使得插件能够响应用户的操作，并根据需要执行相应的逻辑处理。这种响应式的设计模式为用户提供了可定制和可扩展的操作方式。
-灵活的可扩展性：基于VS Code扩展开发框架，该插件
+该扩展根据 [MIT 许可证](LICENSE) 授权。
