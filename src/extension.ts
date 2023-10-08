@@ -86,6 +86,21 @@ export async function activate(context: vscode.ExtensionContext) {
           const pattern = new RegExp(`\\$${i}`, 'g');
           snibody = snibody.replace(pattern, cursorRecords[i - 1]);
         }
+
+        const currentExtension = vscode.extensions.getExtension('frankrun.wedata-test');
+        if (!currentExtension) { return; }
+  
+        const fileName = `${selectedOption.description}.txt`;
+        const filePath = path.join(currentExtension.extensionPath, fileName);
+    
+        fs.writeFile(filePath, snibody,  (err: NodeJS.ErrnoException | null) => {
+          if (err) {
+            vscode.window.showErrorMessage(`Failed to save file: ${err.message}`);
+          } else {
+            vscode.window.showInformationMessage(`File saved: ${filePath}`);
+          }
+        });
+        
         await vscode.window.withProgress({
           location: vscode.ProgressLocation.Notification,
         }, async (progress) => {
