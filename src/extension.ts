@@ -7,6 +7,15 @@ function getExtentionPath(): string {
   if (!currentExtension) { return ""; }
   return currentExtension.extensionPath;
 }
+let openFileInEditor = async (filePath: string) => {
+  const uri = vscode.Uri.file(filePath);
+  const textDocument = await vscode.workspace.openTextDocument(uri);
+  await vscode.window.showTextDocument(textDocument);
+};
+
+// 用法示例
+const filePath = path.join(vscode.workspace.rootPath || '', 'example.txt');
+openFileInEditor(filePath);
 
 export async function activate(context: vscode.ExtensionContext) {
 
